@@ -1,0 +1,49 @@
+{
+  "name": "shopify-capi-validator",
+  "version": "1.0.0",
+  "description": "Validate Meta Conversions API (CAPI) and TikTok Events API payloads locally. Catches unhashed PII, missing event_id, bad event_time, and other silent matching failures before you go live.",
+  "keywords": [
+    "shopify",
+    "meta-capi",
+    "conversions-api",
+    "facebook-capi",
+    "tiktok-events-api",
+    "server-side-tracking",
+    "event-match-quality",
+    "emq",
+    "sha256",
+    "pixel-deduplication",
+    "validator",
+    "cli"
+  ],
+  "homepage": "https://stackarchitect.xyz/capi-shield/",
+  "bugs": {
+    "url": "https://github.com/lsb11/shopify-capi-validator/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lsb11/shopify-capi-validator.git"
+  },
+  "author": {
+    "name": "Stack Architect",
+    "url": "https://stackarchitect.xyz/"
+  },
+  "license": "MIT",
+  "type": "commonjs",
+  "bin": {
+    "shopify-capi-validator": "bin/cli.js"
+  },
+  "main": "lib/validator.js",
+  "files": [
+    "bin/",
+    "lib/",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node test/run.js"
+  },
+  "engines": {
+    "node": ">=16"
+  }
+}
