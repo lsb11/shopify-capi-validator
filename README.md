@@ -1,5 +1,11 @@
 # shopify-capi-validator
 
+# shopify-capi-validator
+
+[![Shopify iOS Attribution Gap](https://stackarchitect.xyz/api/gap-badge)](https://stackarchitect.xyz/shopify-ios-attribution-gap-benchmark/)
+[![npm version](https://img.shields.io/npm/v/shopify-capi-validator)](https://www.npmjs.com/package/shopify-capi-validator)
+[![license](https://img.shields.io/npm/l/shopify-capi-validator)](#license)
+
 Validate **Meta Conversions API (CAPI)** and **TikTok Events API** payloads locally — before you go live.
 
 Meta and TikTok have one infuriating behaviour in common: **they do not tell you when a payload is wrong.** Send a raw (un-hashed) email, a millisecond timestamp, or a `Purchase` with no currency, and the event is simply *never matched* — no error, no warning, just silently missing conversions and a tanking Event Match Quality score. You find out hours later in Events Manager, if at all.
@@ -95,9 +101,21 @@ expects hashed doesn't look like that, this tool flags it. Meta's own guidance
 is explicit: PII must be lowercased, trimmed, then SHA-256 hashed — and the
 platform will *not* warn you if you skip it.
 
-If you're setting up server-side tracking on Shopify and want the full
-field-by-field mapping and a free Make.com implementation, there's a complete
-walkthrough here: **[Free Shopify server-side tracking (CAPI Shield)](https://stackarchitect.xyz/capi-shield/)**.
+## How much are silent failures costing you?
+
+Payloads that fail matching don't error — they just quietly stop attributing.
+Across published research, the typical Shopify store loses an estimated **20–40%**
+of purchase-conversion signal to iOS ATT and Safari ITP before server-side
+tracking is fixed. Stack Architect maintains a live, sourced benchmark of that
+figure — and it's becoming first-party data as real stores contribute:
+
+[![Shopify iOS Attribution Gap](https://stackarchitect.xyz/api/gap-badge)](https://stackarchitect.xyz/shopify-ios-attribution-gap-benchmark/)
+
+## Related — free Shopify tracking resources
+
+- **[CAPI Shield](https://stackarchitect.xyz/capi-shield/)** — free field-by-field Make.com setup for Meta CAPI, Google Enhanced Conversions & TikTok Events API, no code
+- **[iOS Attribution Gap benchmark](https://stackarchitect.xyz/shopify-ios-attribution-gap-benchmark/)** — the maintained, cited figure this validator helps you protect
+- **[Meta EMQ Score Estimator](https://stackarchitect.xyz/meta-emq-score-estimator/)** — estimate your Event Match Quality before you ship
 
 ## License
 
