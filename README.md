@@ -1,7 +1,5 @@
 # shopify-capi-validator
 
-# shopify-capi-validator
-
 [![Shopify iOS Attribution Gap](https://stackarchitect.xyz/api/gap-badge)](https://stackarchitect.xyz/shopify-ios-attribution-gap-benchmark/)
 [![npm version](https://img.shields.io/npm/v/shopify-capi-validator)](https://www.npmjs.com/package/shopify-capi-validator)
 [![license](https://img.shields.io/npm/l/shopify-capi-validator)](#license)
