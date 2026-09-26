@@ -109,7 +109,7 @@ Payloads that fail matching don't error, they just stop attributing. Stack Archi
 
 - **[Shopify server-side tracking setup](https://stackarchitect.xyz/blog/shopify-server-side-tracking-complete-setup-guide/)**: send Shopify orders to Meta, Google and TikTok from the server.
 - **[CAPI Shield](https://stackarchitect.xyz/capi-shield/)**: free field-by-field Make.com setup for Meta CAPI, Google Enhanced Conversions & TikTok Events API, no code
-- **[iOS Attribution Gap benchmark](https://stackarchitect.xyz/shopify-ios-attribution-gap-benchmark/)**: the maintained, cited figure this validator helps you protect
+- **[iOS Attribution Gap benchmark](https://stackarchitect.xyz/shopify-ios-attribution-gap-benchmark/)**: a sourced benchmark of the Shopify iOS attribution gap
 - **[Meta EMQ Score Estimator](https://stackarchitect.xyz/meta-emq-score-estimator/)**: estimate your Event Match Quality before you ship
 
 ## License
