@@ -4,9 +4,9 @@
 [![npm version](https://img.shields.io/npm/v/shopify-capi-validator)](https://www.npmjs.com/package/shopify-capi-validator)
 [![license](https://img.shields.io/npm/l/shopify-capi-validator)](#license)
 
-Validate **Meta Conversions API (CAPI)** and **TikTok Events API** payloads locally — before you go live.
+Validate **Meta Conversions API (CAPI)** and **TikTok Events API** payloads locally, before you go live.
 
-Meta and TikTok have one infuriating behaviour in common: **they do not tell you when a payload is wrong.** Send a raw (un-hashed) email, a millisecond timestamp, or a `Purchase` with no currency, and the event is simply *never matched* — no error, no warning, just silently missing conversions and a tanking Event Match Quality score. You find out hours later in Events Manager, if at all.
+Meta and TikTok have one infuriating behaviour in common: **they do not tell you when a payload is wrong.** Send a raw (un-hashed) email, a millisecond timestamp, or a `Purchase` with no currency, and the event is simply *never matched*. No error, no warning, just silently missing conversions and a tanking Event Match Quality score. You find out hours later in Events Manager, if at all.
 
 This is a zero-dependency CLI that catches those failures in one command.
 
@@ -33,7 +33,7 @@ Exit code is `1` when any check fails, so it drops straight into CI.
 
 ## Install
 
-No install needed — run it with `npx`. Or add it to a project:
+No install needed: run it with `npx`. Or add it to a project:
 
 ```bash
 npm install --save-dev shopify-capi-validator
@@ -69,9 +69,9 @@ npx shopify-capi-validator -p event.json --json
 
 - `event_name`, `event_time`, `event_id`, `action_source` present
 - `event_time` is Unix **seconds** (catches the classic milliseconds mistake) and inside the 7-day window
-- `event_id` present — required so the Pixel and CAPI events **deduplicate** instead of double-counting
+- `event_id` present: required so the Pixel and CAPI events **deduplicate** instead of double-counting
 - `user_data` has at least one strong identifier (`em`, `ph`, `fbc`, or `external_id`)
-- PII fields (`em`, `ph`, `fn`, `ln`, `ct`, `st`, `zp`, `country`, `external_id`) are **SHA-256 hashed** (64-char hex) — not raw
+- PII fields (`em`, `ph`, `fn`, `ln`, `ct`, `st`, `zp`, `country`, `external_id`) are **SHA-256 hashed** (64-char hex), not raw
 - Fields that must stay raw (`client_ip_address`, `client_user_agent`, `fbc`, `fbp`) are **not** accidentally hashed
 - `fbc` / `fbp` use the `fb.1.<timestamp>.<value>` format
 - `Purchase` events include a numeric `value` and ISO-4217 `currency`
@@ -96,24 +96,21 @@ const result = validatePayload(myPayload, { platform: 'meta' });
 
 A SHA-256 digest is always 64 hexadecimal characters. If a field that Meta
 expects hashed doesn't look like that, this tool flags it. Meta's own guidance
-is explicit: PII must be lowercased, trimmed, then SHA-256 hashed — and the
+is explicit: PII must be lowercased, trimmed, then SHA-256 hashed, and the
 platform will *not* warn you if you skip it.
 
 ## How much are silent failures costing you?
 
-Payloads that fail matching don't error — they just quietly stop attributing.
-Across published research, the typical Shopify store loses an estimated **20–40%**
-of purchase-conversion signal to iOS ATT and Safari ITP before server-side
-tracking is fixed. Stack Architect maintains a live, sourced benchmark of that
-figure — and it's becoming first-party data as real stores contribute:
+Payloads that fail matching don't error, they just stop attributing. Stack Architect's iOS attribution gap benchmark tracks what that costs Shopify stores, with sources.
 
 [![Shopify iOS Attribution Gap](https://stackarchitect.xyz/api/gap-badge)](https://stackarchitect.xyz/shopify-ios-attribution-gap-benchmark/)
 
-## Related — free Shopify tracking resources
+## Related: free Shopify tracking resources
 
-- **[CAPI Shield](https://stackarchitect.xyz/capi-shield/)** — free field-by-field Make.com setup for Meta CAPI, Google Enhanced Conversions & TikTok Events API, no code
-- **[iOS Attribution Gap benchmark](https://stackarchitect.xyz/shopify-ios-attribution-gap-benchmark/)** — the maintained, cited figure this validator helps you protect
-- **[Meta EMQ Score Estimator](https://stackarchitect.xyz/meta-emq-score-estimator/)** — estimate your Event Match Quality before you ship
+- **[Shopify server-side tracking setup](https://stackarchitect.xyz/blog/shopify-server-side-tracking-complete-setup-guide/)**: send Shopify orders to Meta, Google and TikTok from the server.
+- **[CAPI Shield](https://stackarchitect.xyz/capi-shield/)**: free field-by-field Make.com setup for Meta CAPI, Google Enhanced Conversions & TikTok Events API, no code
+- **[iOS Attribution Gap benchmark](https://stackarchitect.xyz/shopify-ios-attribution-gap-benchmark/)**: the maintained, cited figure this validator helps you protect
+- **[Meta EMQ Score Estimator](https://stackarchitect.xyz/meta-emq-score-estimator/)**: estimate your Event Match Quality before you ship
 
 ## License
 

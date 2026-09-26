@@ -1,6 +1,6 @@
 {
   "name": "shopify-capi-validator",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Validate Meta Conversions API (CAPI) and TikTok Events API payloads locally. Catches unhashed PII, missing event_id, bad event_time, and other silent matching failures before you go live.",
   "keywords": [
     "shopify",
