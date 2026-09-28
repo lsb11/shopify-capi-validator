@@ -14,7 +14,7 @@ const SYM = { pass: green('✓'), warn: yellow('!'), fail: red('✗') };
 
 function printHelp() {
   console.log(`
-${bold('shopify-capi-validator')} — validate Meta CAPI / TikTok Events API payloads locally
+${bold('shopify-capi-validator')}: validate Meta CAPI / TikTok Events API payloads locally
 
 ${bold('Usage')}
   npx shopify-capi-validator --payload ./webhook.json
@@ -33,9 +33,9 @@ ${bold('Exit codes')}
   1  one or more checks failed
   2  bad usage / unreadable input
 
-Why this exists: Meta and TikTok do not warn you when PII is sent unhashed —
+Why this exists: Meta and TikTok do not warn you when PII is sent unhashed:
 the event is silently never matched. This catches it before you go live.
-Field reference & fixes: ${cyan('https://stackarchitect.xyz/capi-shield/')}
+Field reference & fixes: ${cyan('https://stackarchitect.xyz/meta-capi-payload-validator/')}
 `);
 }
 
