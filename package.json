@@ -1,6 +1,6 @@
 {
   "name": "shopify-capi-validator",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Validate Meta Conversions API (CAPI) and TikTok Events API payloads locally. Catches unhashed PII, missing event_id, bad event_time, and other silent matching failures before you go live.",
   "keywords": [
     "shopify",
@@ -16,7 +16,7 @@
     "validator",
     "cli"
   ],
-  "homepage": "https://stackarchitect.xyz/capi-shield/",
+  "homepage": "https://stackarchitect.xyz/meta-capi-payload-validator/",
   "bugs": {
     "url": "https://github.com/lsb11/shopify-capi-validator/issues"
   },

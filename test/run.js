@@ -7,7 +7,7 @@
 
 const assert = require('assert');
 const crypto = require('crypto');
-const { validatePayload } = require('../lib/validator');
+const { validatePayload, normalizeForMeta } = require('../lib/validator');
 
 const sha256 = (s) => crypto.createHash('sha256').update(s.trim().toLowerCase()).digest('hex');
 const now = Math.floor(Date.now() / 1000);
@@ -22,6 +22,8 @@ const levels = (res) => res.events.flatMap((e) => e.findings.map((f) => f.level)
 const msgs = (res) => res.events.flatMap((e) => e.findings.map((f) => f.msg));
 const hasFail = (res, substr) =>
   res.events.some((e) => e.findings.some((f) => f.level === 'fail' && f.msg.includes(substr)));
+const hasLevel = (res, level, substr) =>
+  res.events.some((e) => e.findings.some((f) => f.level === level && f.msg.includes(substr)));
 const hasPass = (res, substr) =>
   res.events.some((e) => e.findings.some((f) => f.level === 'pass' && f.msg.includes(substr)));
 
@@ -32,6 +34,7 @@ test('Meta: valid hashed Purchase passes with zero failures', () => {
       event_name: 'Purchase',
       event_time: now - 60,
       action_source: 'website',
+      event_source_url: 'https://shop.example.com/checkout/thank_you',
       event_id: 'order_12345',
       user_data: {
         em: sha256('Buyer@Example.com'),
@@ -81,13 +84,14 @@ test('Meta: millisecond event_time is flagged', () => {
 });
 
 // ── Meta: missing event_id is caught ─────────────────────────────────────
-test('Meta: missing event_id is flagged', () => {
+test('Meta: missing event_id is a warning, not a failure (Meta marks it optional)', () => {
   const payload = { data: [{
-    event_name: 'Purchase', event_time: now - 60,
+    event_name: 'Purchase', event_time: now - 60, action_source: 'system_generated',
     user_data: { em: sha256('a@b.com') }, custom_data: { value: 5, currency: 'USD' },
   }] };
   const res = validatePayload(payload);
-  assert.ok(hasFail(res, 'event_id missing'));
+  assert.ok(!hasFail(res, 'event_id'));
+  assert.ok(hasLevel(res, 'warn', 'event_id missing'));
 });
 
 // ── Meta: Purchase without currency is caught ────────────────────────────
@@ -101,12 +105,54 @@ test('Meta: Purchase missing currency is flagged', () => {
 });
 
 // ── Meta: no identifier at all is caught ─────────────────────────────────
-test('Meta: no customer identifier is flagged', () => {
+test('Meta: no customer information parameter is flagged', () => {
   const payload = { data: [{
     event_name: 'PageView', event_time: now - 60, event_id: 'x', user_data: {},
   }] };
   const res = validatePayload(payload);
-  assert.ok(hasFail(res, 'no customer identifier'));
+  assert.ok(hasLevel(res, 'warn', 'no customer information parameter'));
+});
+
+test('Meta: missing user_data and action_source fail (both required)', () => {
+  const res = validatePayload({ data: [{ event_name: 'Lead', event_time: now - 60, event_id: 'x' }] });
+  assert.ok(hasFail(res, 'user_data missing'));
+  assert.ok(hasFail(res, 'action_source missing'));
+});
+
+test('Meta: website events need event_source_url and client_user_agent', () => {
+  const res = validatePayload({ data: [{
+    event_name: 'Purchase', event_time: now - 60, action_source: 'website', event_id: 'x',
+    user_data: { em: sha256('a@b.com') }, custom_data: { value: 5, currency: 'USD' },
+  }] });
+  assert.ok(hasFail(res, 'event_source_url missing'));
+  assert.ok(hasFail(res, 'client_user_agent missing'));
+});
+
+test('Meta: event older than 7 days fails the whole request', () => {
+  const res = validatePayload({ data: [{
+    event_name: 'Lead', event_time: now - 8 * 24 * 3600, action_source: 'system_generated', event_id: 'x',
+    user_data: { em: sha256('a@b.com') },
+  }] });
+  assert.ok(hasFail(res, 'older than 7 days'));
+});
+
+test('Meta: unhashed external_id is a warning (hashing recommended, not required)', () => {
+  const res = validatePayload({ data: [{
+    event_name: 'Lead', event_time: now - 60, action_source: 'system_generated', event_id: 'x',
+    user_data: { em: sha256('a@b.com'), external_id: 'customer-123' },
+  }] });
+  assert.ok(!hasFail(res, 'external_id'));
+  assert.ok(hasLevel(res, 'warn', 'external_id is not hashed'));
+});
+
+test('normalizeForMeta follows Meta\'s rules', () => {
+  assert.strictEqual(normalizeForMeta('em', '  Buyer@Example.com '), 'buyer@example.com');
+  assert.strictEqual(normalizeForMeta('ph', '+1 (650) 555-1212'), '16505551212');
+  assert.strictEqual(normalizeForMeta('ct', 'San Francisco'), 'sanfrancisco');
+  assert.strictEqual(normalizeForMeta('zp', '94035-1234'), '940351234');
+  assert.strictEqual(normalizeForMeta('fn', "O'Brien"), 'obrien');
+  assert.strictEqual(normalizeForMeta('country', 'GB'), 'gb');
+  assert.throws(() => normalizeForMeta('client_ip_address', '1.2.3.4'));
 });
 
 // ── TikTok: valid CompletePayment passes ─────────────────────────────────

@@ -65,16 +65,25 @@ npx shopify-capi-validator -p event.json --json
 
 ## What it checks
 
-**Meta Conversions API**
+**Meta Conversions API** (rules checked against Meta's [Conversions API parameter docs](https://developers.facebook.com/documentation/ads-commerce/conversions-api/parameters) on 28 September 2026)
 
-- `event_name`, `event_time`, `event_id`, `action_source` present
-- `event_time` is Unix **seconds** (catches the classic milliseconds mistake) and inside the 7-day window
-- `event_id` present: required so the Pixel and CAPI events **deduplicate** instead of double-counting
-- `user_data` has at least one strong identifier (`em`, `ph`, `fbc`, or `external_id`)
-- PII fields (`em`, `ph`, `fn`, `ln`, `ct`, `st`, `zp`, `country`, `external_id`) are **SHA-256 hashed** (64-char hex), not raw
+Fails, because Meta requires them:
+
+- `event_name`, `event_time`, `action_source` and `user_data` present on every event
+- `event_time` is Unix **seconds** (catches the classic milliseconds mistake) and no more than 7 days old. One old event makes Meta reject the whole request.
+- Website events (`action_source: "website"`) include `event_source_url` and `user_data.client_user_agent`
+- `em`, `ph`, `fn`, `ln`, `ct`, `st`, `zp` and `country` are **SHA-256 hashed** (64-char hex), not raw
 - Fields that must stay raw (`client_ip_address`, `client_user_agent`, `fbc`, `fbp`) are **not** accidentally hashed
-- `fbc` / `fbp` use the `fb.1.<timestamp>.<value>` format
-- `Purchase` events include a numeric `value` and ISO-4217 `currency`
+- `Purchase` events include `value` and `currency`
+
+Warns, because Meta recommends them or they point to a bug:
+
+- `event_id` missing. Meta marks it optional but recommends it for deduplicating browser Pixel and server events.
+- No customer information parameter such as `em` or `ph`
+- `external_id` not hashed (Meta recommends hashing it)
+- `fbc` / `fbp` not in the `fb.1.<timestamp>.<value>` format, a future `event_time`, a non-numeric `value` or a non-ISO `currency`
+
+It also exports `normalizeForMeta(field, value)`, which applies Meta's formatting rules (lowercase email, digits-only phone, and so on) so you can hash the result.
 
 **TikTok Events API**
 
@@ -82,6 +91,8 @@ npx shopify-capi-validator -p event.json --json
 - `user` has at least one identifier (`email`, `phone`, `ttclid`, `external_id`)
 - PII SHA-256 hashed; `ip` / `user_agent` left raw
 - `CompletePayment` includes `value` + `currency`
+
+The TikTok rules have not yet been re-checked against TikTok's current Events API documentation. Treat them as a first pass.
 
 ## Use it as a library
 
