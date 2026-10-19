@@ -10,6 +10,8 @@ Meta and TikTok have one infuriating behaviour in common: **they do not tell you
 
 This is a zero-dependency CLI that catches those failures in one command.
 
+No terminal? The same checks run in your browser at the [Meta CAPI payload validator](https://stackarchitect.xyz/meta-capi-payload-validator/). The payload never leaves the page.
+
 ```bash
 npx shopify-capi-validator --payload ./webhook.json
 ```
