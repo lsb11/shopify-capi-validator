@@ -120,10 +120,15 @@ Payloads that fail matching don't error, they just stop attributing. Stack Archi
 
 ## Related: free Shopify tracking resources
 
-- **[Shopify server-side tracking setup](https://stackarchitect.xyz/blog/shopify-server-side-tracking-complete-setup-guide/)**: send Shopify orders to Meta, Google and TikTok from the server.
-- **[CAPI Shield](https://stackarchitect.xyz/capi-shield/)**: free field-by-field Make.com setup for Meta CAPI, Google Enhanced Conversions & TikTok Events API, no code
+- **[Shopify server-side tracking setup](https://stackarchitect.xyz/blog/shopify-server-side-tracking-complete-setup-guide/)**: send each paid Shopify order to Meta and TikTok from Shopify's order webhook, and why Google Ads is a different fix.
+- **[CAPI Shield](https://stackarchitect.xyz/capi-shield/)**: a free Make.com scenario that sends Shopify orders to Meta's Conversions API, field by field, no code.
+- **[TikTok Events API for Shopify](https://stackarchitect.xyz/tiktok-events-api-shopify/)**: the same pattern for TikTok, including why the event must be `CompletePayment`, not `Purchase`.
+- **[Fix Shopify Google Ads conversion tracking](https://stackarchitect.xyz/shopify-google-ads-conversion-tracking/)**: Shopify orders carry no Google click ID, so for most stores the fix is enhanced conversions in the Google & YouTube app.
 - **[iOS Attribution Gap benchmark](https://stackarchitect.xyz/shopify-ios-attribution-gap-benchmark/)**: a sourced benchmark of the Shopify iOS attribution gap
-- **[Meta EMQ Score Estimator](https://stackarchitect.xyz/meta-emq-score-estimator/)**: estimate your Event Match Quality before you ship
+- **[Meta EMQ match-key checker](https://stackarchitect.xyz/meta-emq-score-estimator/)**: see which match keys your events carry before you ship.
+- **[Why Shopify Meta ROAS dropped](https://stackarchitect.xyz/blog/shopify-meta-roas-dropped-2026-fix/)**: work out whether the cause is tracking before you change anything.
+
+More free guides and tools: [stackarchitect.xyz](https://stackarchitect.xyz/).
 
 ## License
 
